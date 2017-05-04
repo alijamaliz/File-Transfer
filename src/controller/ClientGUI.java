@@ -1,7 +1,6 @@
 package controller;
 
 import javafx.fxml.Initializable;
-import model.Server;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -15,11 +14,10 @@ import java.util.ResourceBundle;
 public class ClientGUI implements Initializable {
     public ClientGUI() {
         try {
-            Socket clientSocket = new Socket("localhost", Server.port);
+            Socket clientSocket = new Socket("localhost", 17286);
             DataOutputStream outputStream = new DataOutputStream(clientSocket.getOutputStream());
-            outputStream.writeChar('a');
-            outputStream.writeChar('b');
-            outputStream.writeChar('c');
+            outputStream.writeUTF("ali");
+
         } catch (IOException e) {
             e.printStackTrace();
         }
