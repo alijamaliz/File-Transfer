@@ -7,15 +7,14 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import javafx.stage.FileChooser;
 import model.Client;
 import model.Server;
 
 import java.awt.*;
-import java.awt.TextArea;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.net.Socket;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -24,6 +23,7 @@ import java.util.ResourceBundle;
  * Created by Baran on 5/1/2017.
  */
 public class ClientGUI implements Initializable {
+    File selectedFile;
     @FXML
     private TextField path;
 
@@ -33,20 +33,9 @@ public class ClientGUI implements Initializable {
     @FXML
     private Button send;
 
-    //@FXML
-    //private TextArea consoleText;
+    @FXML
+    private TextArea consoleTextArea;
 
-    public ClientGUI() {
-        /*try {
-            Socket clientSocket = new Socket("localhost", Server.port);
-            DataOutputStream outputStream = new DataOutputStream(clientSocket.getOutputStream());
-            outputStream.writeChar('a');
-            outputStream.writeChar('b');
-            outputStream.writeChar('c');
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
-    }
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         browser.setOnAction(new EventHandler<ActionEvent>() {
@@ -59,12 +48,46 @@ public class ClientGUI implements Initializable {
                 fileChooser.getExtensionFilters().addAll(
                         new FileChooser.ExtensionFilter("All Images", "*.*")
                 );
-                fileChooser.showOpenDialog(Client.stage);
+                selectedFile = fileChooser.showOpenDialog(Client.stage);
+                if (selectedFile != null)
+                    path.setText(selectedFile.getPath());
+                else
+                    System.out.println("NULL");
+            }
+        });
+        send.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                try {
+                    sendFile(selectedFile);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
 
     public static void main(String[] args) {
         ClientGUI clientGUI = new ClientGUI();
+    }
+
+    public static boolean sendFile(File file) throws Exception{
+        FileInputStream fileOutputStream = new FileInputStream(file);
+        Socket clientSocket = new Socket("localhost", Server.port);
+        DataOutputStream outputStream = new DataOutputStream(clientSocket.getOutputStream());
+        int byteCode;
+        outputStream.write((int)file.length());
+        while( -1 != (byteCode = fileOutputStream.read())) {
+            System.out.print((byte) byteCode);
+            outputStream.writeByte((byte) byteCode);
+        }
+        outputStream.writeByte((byte)(-1));
+        outputStream.flush();
+        clientSocket.getOutputStream().flush();
+        return true;
+    }
+
+    public void logInConsole(String log) {
+        consoleTextArea.setText(consoleTextArea.getText() + "\n" + log);
     }
 }

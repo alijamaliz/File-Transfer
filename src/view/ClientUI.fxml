@@ -10,7 +10,7 @@
    <children>
       <TextField fx:id="path" disable="true" layoutX="37.0" layoutY="38.0" />
       <Button fx:id="browser" layoutX="186.0" layoutY="38.0" mnemonicParsing="false" text="Browse" />
-      <TextArea fx:id="consoleText" layoutX="37.0" layoutY="100.0" prefHeight="200.0" prefWidth="200.0" />
       <Button fx:id="send" layoutX="104.0" layoutY="68.0" mnemonicParsing="false" text="Send" />
+      <TextArea fx:id="consoleTextArea" layoutX="37.0" layoutY="100.0" prefHeight="200.0" prefWidth="200.0" />
    </children>
 </AnchorPane>
