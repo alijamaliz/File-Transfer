@@ -114,6 +114,9 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="248">
               <caret line="21" column="37" selection-start-line="21" selection-start-column="37" selection-end-line="21" selection-end-column="37" />
+            </state>
+            <state relative-caret-position="514">
+              <caret line="63" column="13" selection-start-line="63" selection-start-column="13" selection-end-line="63" selection-end-column="13" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -796,11 +799,13 @@
       <workItem from="1493651077903" duration="3609000" />
       <workItem from="1493717192355" duration="20192000" />
       <workItem from="1494074379538" duration="5556000" />
+      <workItem from="1493717192355" duration="21751000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
     <option name="totallyTimeSpent" value="29357000" />
+    <option name="totallyTimeSpent" value="25360000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-9" y="-9" width="1938" height="1048" extended-state="6" />
@@ -1089,6 +1094,14 @@
         <state relative-caret-position="264">
           <caret line="25" column="18" selection-start-line="25" selection-start-column="18" selection-end-line="25" selection-end-column="18" />
           <folding />
+        </state>
+        <state relative-caret-position="514">
+          <caret line="63" column="13" selection-start-line="63" selection-start-column="13" selection-end-line="63" selection-end-column="13" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#1692#1693#0" expanded="true" />
+            <element signature="e#1755#1756#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

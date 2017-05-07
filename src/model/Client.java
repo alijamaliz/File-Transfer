@@ -4,7 +4,6 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
 import java.io.IOException;
 
 /**
@@ -18,6 +17,7 @@ public class Client extends Application{
     public void start(Stage primaryStage) throws Exception {
         stage = primaryStage;
         stage.setTitle("Send file");
+        stage.setX(700);
         try {
             stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/view/ClientUI.fxml")), 600, 400));
         } catch (IOException e) {
