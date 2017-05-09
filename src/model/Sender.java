@@ -6,6 +6,7 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.net.Socket;
+import java.util.stream.Stream;
 
 /**
  * Created by Alireza on 5/6/2017.
@@ -42,6 +43,9 @@ public class Sender extends Thread {
         clientGUI.logInConsole("Successfuly connected to " + ControlPanel.serverAddress + ":" + ControlPanel.port);
         clientGUI.logInConsole("Start sending: " + file.getPath());
         int byteCode;
+        //outputStream.write(Byte.parseByte(file.getName()));
+        outputStream.writeBytes(file.getName());
+        outputStream.flush();
         outputStream.write((int)fileSize);
         while( -1 != (byteCode = fileOutputStream.read())) {
             outputStream.writeByte((byte) byteCode);

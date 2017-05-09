@@ -1,15 +1,19 @@
 package model;
 
 import controller.ServerGUI;
+import sun.misc.IOUtils;
+import sun.nio.ch.IOUtil;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Scanner;
 
 /**
  * Created by Baran on 5/6/2017.
  */
 public class Listener extends Thread {
+
     private static int numberOfListener = 0;
     private static ServerSocket serverSocket;
     private InputStream inputStream ;
@@ -26,7 +30,10 @@ public class Listener extends Thread {
                 serverSocket = new ServerSocket(ControlPanel.port);
             Socket socket = serverSocket.accept();
             inputStream = socket.getInputStream();
-            String name = "test" + ++numberOfListener;
+            Scanner scanner = new Scanner(inputStream);
+            String name =scanner.hasNext() ? scanner.next() :"" ;
+            System.out.println(name);
+            //String name = "test" + ++numberOfListener;
             String filename = ControlPanel.downloadDirectory + name;
             FileOutputStream fileOutputStream = new FileOutputStream(filename);
             while (!socket.isClosed()) {
