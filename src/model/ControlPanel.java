@@ -7,5 +7,5 @@ public class ControlPanel {
     public static int port = 17289;
     public static String hostAddress = "localhost";
 	public static String serverAddress = "localhost";
-    public static String downloadDirectory = "d:\\";
+    public static String downloadDirectory = "D:\\";
 }

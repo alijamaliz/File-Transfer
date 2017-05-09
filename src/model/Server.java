@@ -18,7 +18,7 @@ public class Server extends Application{
         Server.stage.setTitle("File Transfer");
         Server.stage.setX(100);
         try {
-            Server.stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/view/ServerUI.fxml")), 600, 400));
+            Server.stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/view/ServerUI.fxml")), 300, 390));
         } catch (IOException e) {
             e.printStackTrace();
         }
