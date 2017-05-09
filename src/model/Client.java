@@ -19,7 +19,7 @@ public class Client extends Application{
         stage.setTitle("Send file");
         stage.setX(700);
         try {
-            stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/view/ClientUI.fxml")), 600, 400));
+            stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/view/ClientUI.fxml")), 300, 390));
         } catch (IOException e) {
             e.printStackTrace();
         }
