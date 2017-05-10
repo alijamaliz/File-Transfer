@@ -85,12 +85,12 @@ public class ClientGUI implements Initializable {
             public void handle(ActionEvent event) {
                 try {
                     if (selectedFile != null) {
-                        if (isValidIP()) {
+                        //if (isValidIP()) {
                             Sender sender = new Sender(ClientGUI.this, selectedFile);
                             sender.start();
-                        }
-                        else
-                            logInConsole("Enter a valid IP.");
+                        //}
+                        //else
+                        //    logInConsole("Enter a valid IP.");
                     }
                     else
                         logInConsole("Select a file and try again.");
@@ -121,13 +121,15 @@ public class ClientGUI implements Initializable {
         consoleTextArea.setText(consoleTextArea.getText() + log + "\n");
     }
 
-    public void setProgressBarValue(Double value) {
+    public void setProgressBarValue(double value) {
         progressBar.setProgress(value);
-        setPercentLabelText((int)(value  * 100));
+        setPercentLabelText((int)(value * 100));
     }
 
     public void setPercentLabelText(int percent) {
-        percentLabel.setText(String.valueOf(percent) + "%");
+//        System.out.println(percent + "%");
+        System.out.println(percentLabel.getText());
+        percentLabel.setText(percent + "%");
     }
 
     public void setSizeLabelText(String size) {

@@ -12,6 +12,7 @@ import model.Server;
 
 import java.io.File;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 /**
@@ -19,7 +20,7 @@ import java.util.ResourceBundle;
  */
 public class ServerGUI implements Initializable {
 
-    private Listener listener;
+    public ArrayList<Listener> listeners = new ArrayList<Listener>();
 
     @FXML
     private Button listen;
@@ -68,8 +69,7 @@ public class ServerGUI implements Initializable {
         listen.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                listener = new Listener(ServerGUI.this);
-                listener.start();
+                setupNewListener();
                 logInConsole("Listenning on " + ControlPanel.hostAddress + ":" + ControlPanel.port + "...");
             }
         });
@@ -111,7 +111,7 @@ public class ServerGUI implements Initializable {
         console.setText(console.getText() + log + "\n");
     }
 
-    private void setProgressBarValue(Double value) {
+    public void setProgressBarValue(double value) {
         progressbar.setProgress(value);
         setPercentLabelText((int)(value  * 100));
     }
@@ -146,5 +146,12 @@ public class ServerGUI implements Initializable {
     private void stopAndExit() {
         //TODO
         System.exit(0);
+    }
+
+    public void setupNewListener() {
+        Listener listener = new Listener(ServerGUI.this);
+        listener.start();
+        listeners.add(listener);
+        logInConsole("New listener was setup!");
     }
 }

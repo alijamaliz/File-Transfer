@@ -44,6 +44,7 @@ public class Sender extends Thread {
         clientGUI.logInConsole("Start sending: " + file.getPath());
         int byteCode;
         //outputStream.write(Byte.parseByte(file.getName()));
+        outputStream.write(file.getName().getBytes().length);
         outputStream.writeBytes(file.getName());
         outputStream.flush();
         outputStream.write((int)fileSize);
@@ -51,6 +52,7 @@ public class Sender extends Thread {
             outputStream.writeByte((byte) byteCode);
             outputStream.flush();
             sentBytes++;
+            clientGUI.setProgressBarValue(getPercentage());
         }
         outputStream.writeByte((byte)(-1));
         clientSocket.getOutputStream().flush();

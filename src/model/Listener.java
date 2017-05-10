@@ -24,32 +24,37 @@ public class Listener extends Thread {
     @Override
     public void run() {
         try {
-            boolean isFirstByte= true;
-            int length = 0;
             if (serverSocket == null)
                 serverSocket = new ServerSocket(ControlPanel.port);
             Socket socket = serverSocket.accept();
             inputStream = socket.getInputStream();
-            Scanner scanner = new Scanner(inputStream);
-            String name =scanner.hasNext() ? scanner.next() :"" ;
-            System.out.println(name);
-            //String name = "test" + ++numberOfListener;
-            String filename = ControlPanel.downloadDirectory + name;
+
+            byte[] nameBytes;
+            String name = "";
+            String filename = "";
+
+            serverGUI.logInConsole(socket.getRemoteSocketAddress().toString() + " connected.");
+            serverGUI.setupNewListener();
+
+            nameBytes = new byte[inputStream.read()];
+            for (int i = 0; i < nameBytes.length; i++) {
+                nameBytes[i] = (byte) inputStream.read();
+            }
+
+            name = new String(nameBytes,"UTF-8");
+            filename = ControlPanel.downloadDirectory + name;
             FileOutputStream fileOutputStream = new FileOutputStream(filename);
+
+            int length = (int) inputStream.read();
+
             while (!socket.isClosed()) {
-                if (isFirstByte) {
-                    serverGUI.logInConsole(socket.getRemoteSocketAddress().toString() + " connected.");
-                    Listener listener = new Listener(serverGUI);
-                    listener.start();
-                    length = (int) inputStream.read();
-                    isFirstByte = false;
-                }
                 String res="";
                 int byteCode;
                 int count = 0;
                 while (-1 != (byteCode = inputStream.read())){
                     fileOutputStream.write((byte) byteCode);
                     fileOutputStream.flush();
+                    //serverGUI.setProgressBarValue();
                 }
                 fileOutputStream.close();
                 serverGUI.logInConsole("File downloaded in " + filename);
