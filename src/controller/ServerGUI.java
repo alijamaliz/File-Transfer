@@ -66,6 +66,7 @@ public class ServerGUI implements Initializable {
         directoryTextField.setText(ControlPanel.downloadDirectory);
         portTextField.setText(String.valueOf(ControlPanel.port));
         setProgressBarValue(0.4315);
+
         listen.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
