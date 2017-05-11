@@ -113,7 +113,7 @@ public class ServerGUI implements Initializable {
 
     public void setProgressBarValue(double value) {
         progressbar.setProgress(value);
-        setPercentLabelText((int)(value  * 100));
+        //setPercentLabelText((int)(value  * 100));
     }
 
     private void setPercentLabelText(int percent) {
@@ -153,5 +153,13 @@ public class ServerGUI implements Initializable {
         listener.start();
         listeners.add(listener);
         logInConsole("New listener was setup!");
+    }
+
+    public int getProgressBarValue() {
+        int bank = 0;
+        for (Listener listener : listeners) {
+            bank += listener.getPercent();
+        }
+        return bank/listeners.size();
     }
 }

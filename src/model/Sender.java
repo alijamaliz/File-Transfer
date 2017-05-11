@@ -53,6 +53,7 @@ public class Sender extends Thread {
             outputStream.flush();
             sentBytes++;
             clientGUI.setProgressBarValue(getPercentage());
+            clientGUI.setSizeLabelText(sentBytes, (int) fileSize);
         }
         outputStream.writeByte((byte)(-1));
         clientSocket.getOutputStream().flush();

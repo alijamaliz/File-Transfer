@@ -18,6 +18,7 @@ public class Listener extends Thread {
     private static ServerSocket serverSocket;
     private InputStream inputStream ;
     private ServerGUI serverGUI;
+    private int fileSize = 0, receivedBytes = 0;
     public Listener(ServerGUI serverGUI){
         this.serverGUI = serverGUI;
     }
@@ -29,23 +30,20 @@ public class Listener extends Thread {
             Socket socket = serverSocket.accept();
             inputStream = socket.getInputStream();
 
-            byte[] nameBytes;
-            String name = "";
-            String filename = "";
 
             serverGUI.logInConsole(socket.getRemoteSocketAddress().toString() + " connected.");
             serverGUI.setupNewListener();
 
-            nameBytes = new byte[inputStream.read()];
+            byte[] nameBytes = new byte[inputStream.read()];
             for (int i = 0; i < nameBytes.length; i++) {
                 nameBytes[i] = (byte) inputStream.read();
             }
 
-            name = new String(nameBytes,"UTF-8");
-            filename = ControlPanel.downloadDirectory + name;
+            String name = new String(nameBytes,"UTF-8");
+            String filename = ControlPanel.downloadDirectory + name;
             FileOutputStream fileOutputStream = new FileOutputStream(filename);
 
-            int length = (int) inputStream.read();
+            fileSize = (int) inputStream.read();
 
             while (!socket.isClosed()) {
                 String res="";
@@ -54,7 +52,8 @@ public class Listener extends Thread {
                 while (-1 != (byteCode = inputStream.read())){
                     fileOutputStream.write((byte) byteCode);
                     fileOutputStream.flush();
-                    //serverGUI.setProgressBarValue();
+                    receivedBytes++;
+                    serverGUI.setProgressBarValue(serverGUI.getProgressBarValue());
                 }
                 fileOutputStream.close();
                 serverGUI.logInConsole("File downloaded in " + filename);
@@ -64,5 +63,10 @@ public class Listener extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+    public int getPercent() {
+        if(fileSize == 0)
+            return 0;
+        return receivedBytes / fileSize * 100;
     }
 }

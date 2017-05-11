@@ -51,7 +51,7 @@ public class ClientGUI implements Initializable {
     private TextField ipPart4;
 
     @FXML
-    private Label percentLabel;
+    private TextField percentTextField;
 
     @FXML
     private Label sizeLabel;
@@ -128,12 +128,8 @@ public class ClientGUI implements Initializable {
 
     public void setPercentLabelText(int percent) {
 //        System.out.println(percent + "%");
-        System.out.println(percentLabel.getText());
-        percentLabel.setText(percent + "%");
-    }
-
-    public void setSizeLabelText(String size) {
-        sizeLabel.setText(size + "Bytes");
+       // System.out.println(percentTextField.getText());
+        percentTextField.setText(percent + "%");
     }
 
     public void setSpeedLabelText(int speed) {
@@ -158,5 +154,11 @@ public class ClientGUI implements Initializable {
         }
         ControlPanel.serverAddress = ipPart1.getText() + "." + ipPart2.getText() + "." + ipPart3.getText() + "." + ipPart4.getText();
         return true;
+    }
+
+    public void setSizeLabelText(int sent, int total) {
+        System.out.println(sent + "/" + total + " Bytes");
+        sizeLabel.setText("Dalghak");
+        //sizeLabel.setText(sent + "/" + total + " Bytes");
     }
 }

@@ -27,10 +27,9 @@
       <Button fx:id="send" layoutX="10.0" layoutY="100.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="280.0" text="Send" />
       <TextArea fx:id="consoleTextArea" editable="false" layoutX="10.0" layoutY="180.0" prefHeight="200.0" prefWidth="280.0" />
       <ProgressBar fx:id="progressBar" layoutX="10.0" layoutY="135.0" prefWidth="280.0" progress="0.0" />
-      <Label fx:id="percentLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="142.0" layoutY="155.0" text="0%" textAlignment="CENTER" />
       <Label layoutX="10.0" layoutY="68.0" text="Target IP:" />
       <Label fx:id="speedLabel" alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="255.0" layoutY="155.0" text="0 KB/s" textAlignment="RIGHT" />
-      <Label fx:id="sizeLabel" layoutX="10.0" layoutY="155.0" text="0/0 Bytes" />
+      <Label fx:id="sizeLabel" layoutX="10.0" layoutY="155.0" style="-fx-background-color: rgba(0,0,0,0.5);;" text="0/0 Bytes" />
       <TextField fx:id="ipPart4" alignment="CENTER" layoutX="250.0" layoutY="65.0" prefHeight="25.0" prefWidth="40.0" />
       <TextField fx:id="ipPart3" alignment="CENTER" layoutX="200.0" layoutY="65.0" prefHeight="25.0" prefWidth="40.0" />
       <TextField fx:id="ipPart2" alignment="CENTER" layoutX="150.0" layoutY="65.0" prefHeight="25.0" prefWidth="40.0" />
@@ -38,5 +37,6 @@
       <Label layoutX="143.0" layoutY="75.0" text="." />
       <Label layoutX="194.0" layoutY="75.0" text="." />
       <Label layoutX="244.0" layoutY="75.0" text="." />
+      <TextField fx:id="percentTextField" alignment="CENTER" disable="true" editable="false" layoutX="126.0" layoutY="150.0" prefWidth="50.0" style="-fx-background-color: rgba(0,0,0,0);" text="0%" />
    </children>
 </AnchorPane>
