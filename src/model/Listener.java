@@ -33,6 +33,7 @@ public class Listener extends Thread {
     }
 
     private FileWriter fileWriter;
+    private FileReader fileReader;
     BufferedWriter out;
     DateFormat dateFormat;
     Date date;
@@ -50,9 +51,26 @@ public class Listener extends Thread {
 
     }
 
+    private void addLogsToHistory()throws IOException
+    {
+        String line="";
+
+        fileReader = new FileReader("G:\\university\\term2\\AP\\project2\\File-Transfer\\src\\controller\\downloadhistory.txt");
+        BufferedReader bufferedReader = new BufferedReader(fileReader);
+        while ((line = bufferedReader.readLine()) != null) {
+            System.out.println(line);
+            String[] logFile = line.split("|",10);
+            System.out.println(logFile[2]);
+
+            serverGUI.addTransferToList(new Transfer(logFile[0], logFile[1], logFile[2]));
+        }
+
+    }
+
     @Override
     public void run() {
         try {
+            addLogsToHistory();
             if (serverSocket == null)
                 serverSocket = new ServerSocket(ControlPanel.port);
             Socket socket = serverSocket.accept();
@@ -69,12 +87,15 @@ public class Listener extends Thread {
             String remoteAddress = socket.getRemoteSocketAddress().toString();
             String name = new String(nameBytes, "UTF-8");
             writeText(name, remoteAddress);
+            Transfer transfer = new Transfer(name,dateFormat.format(date),remoteAddress);
+            serverGUI.addTransferToList(transfer);
             String filename = ControlPanel.downloadDirectory + name;
             FileOutputStream fileOutputStream = new FileOutputStream(filename);
             fileSize = (int) inputStream.read();
 
 
             while (!socket.isClosed()) {
+
                 String res = "";
                 int byteCode;
                 int count = 0;

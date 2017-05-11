@@ -1,18 +1,23 @@
 package controller;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.DirectoryChooser;
 import model.ControlPanel;
 import model.Listener;
 import model.Server;
+import model.Transfer;
 
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 /**
@@ -59,13 +64,45 @@ public class ServerGUI implements Initializable {
     private TableView historyTable;
 
     @FXML
+    private TableColumn nameColumn;
+
+    @FXML
+    private TableColumn dateColumn;
+
+    @FXML
+    private TableColumn addressColumn;
+
+
+    @FXML
     private Button exit;
+
+    List<Transfer> trasferList;
+
+    public void addTransferToList(Transfer transfer)
+    {
+        trasferList.add(transfer);
+        updateHistoryTable();
+    }
+
+    public void updateHistoryTable()
+    {
+        ObservableList<Transfer> observableList = FXCollections.observableList(trasferList);
+        historyTable.setItems(observableList);
+    }
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         directoryTextField.setText(ControlPanel.downloadDirectory);
         portTextField.setText(String.valueOf(ControlPanel.port));
         setProgressBarValue(0.4315);
+
+
+        trasferList = new ArrayList<Transfer>();
+        nameColumn.setCellValueFactory(new PropertyValueFactory<Transfer,String>("name"));
+        dateColumn.setCellValueFactory(new PropertyValueFactory<Transfer,String>("date"));
+        addressColumn.setCellValueFactory(new PropertyValueFactory<Transfer,String>("address"));
+
 
         listen.setOnAction(new EventHandler<ActionEvent>() {
             @Override
