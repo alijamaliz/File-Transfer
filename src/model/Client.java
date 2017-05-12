@@ -18,8 +18,10 @@ public class Client extends Application{
         stage = primaryStage;
         stage.setTitle("Send file");
         stage.setX(700);
+        stage.setY(100);
+        stage.setResizable(false);
         try {
-            stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/view/ClientUI.fxml")), 300, 390));
+            stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/view/ClientUI.fxml")), 290, 380));
         } catch (IOException e) {
             e.printStackTrace();
         }

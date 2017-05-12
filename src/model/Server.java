@@ -16,9 +16,11 @@ public class Server extends Application{
     public void start(Stage primaryStage) throws Exception {
         stage = primaryStage;
         Server.stage.setTitle("File Transfer");
-        Server.stage.setX(100);
+        Server.stage.setX(350);
+        Server.stage.setY(100);
+        Server.stage.setResizable(false);
         try {
-            Server.stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/view/ServerUI.fxml")), 300, 390));
+            Server.stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/view/ServerUI.fxml")), 290, 380));
         } catch (IOException e) {
             e.printStackTrace();
         }

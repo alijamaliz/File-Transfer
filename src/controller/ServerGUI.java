@@ -14,9 +14,12 @@ import model.Listener;
 import model.Server;
 import model.Transfer;
 
-import java.io.File;
+import java.io.*;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -26,6 +29,10 @@ import java.util.ResourceBundle;
 public class ServerGUI implements Initializable {
 
     public ArrayList<Listener> listeners = new ArrayList<Listener>();
+    private FileWriter fileWriter;
+    private FileReader fileReader;
+    DateFormat dateFormat;
+    Date date;
 
     @FXML
     private Button listen;
@@ -78,30 +85,24 @@ public class ServerGUI implements Initializable {
 
     List<Transfer> trasferList;
 
-    public void addTransferToList(Transfer transfer)
-    {
-        trasferList.add(transfer);
-        updateHistoryTable();
-    }
-
-    public void updateHistoryTable()
-    {
-        ObservableList<Transfer> observableList = FXCollections.observableList(trasferList);
-        historyTable.setItems(observableList);
-    }
-
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         directoryTextField.setText(ControlPanel.downloadDirectory);
         portTextField.setText(String.valueOf(ControlPanel.port));
-        setProgressBarValue(0.4315);
-
+        setProgressBarValue(0.0);
 
         trasferList = new ArrayList<Transfer>();
         nameColumn.setCellValueFactory(new PropertyValueFactory<Transfer,String>("name"));
         dateColumn.setCellValueFactory(new PropertyValueFactory<Transfer,String>("date"));
         addressColumn.setCellValueFactory(new PropertyValueFactory<Transfer,String>("address"));
+
+
+        try {
+            addLogsToHistory();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
 
         listen.setOnAction(new EventHandler<ActionEvent>() {
@@ -134,7 +135,11 @@ public class ServerGUI implements Initializable {
         showExplorer.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                showDownloadDirectoryInExplorer();
+                try {
+                    showDownloadDirectoryInExplorer();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
         exit.setOnAction(new EventHandler<ActionEvent>() {
@@ -166,8 +171,8 @@ public class ServerGUI implements Initializable {
         numberOfClientsLabel.setText("Number of clients: " + number);
     }
 
-    private void showDownloadDirectoryInExplorer() {
-        //TODO
+    private void showDownloadDirectoryInExplorer() throws Exception{
+        Runtime.getRuntime().exec("explorer.exe " + ControlPanel.downloadDirectory);
     }
 
     private void changeDirectory() {
@@ -199,5 +204,35 @@ public class ServerGUI implements Initializable {
             bank += listener.getPercent();
         }
         return bank/listeners.size();
+    }
+
+    public void addTransferToList(Transfer transfer)
+    {
+        trasferList.add(transfer);
+        updateHistoryTable();
+    }
+
+    public void updateHistoryTable()
+    {
+        ObservableList<Transfer> observableList = FXCollections.observableList(trasferList);
+        historyTable.setItems(observableList);
+    }
+
+    private void addLogsToHistory()throws IOException
+    {
+        String line="";
+        fileReader = new FileReader(ControlPanel.logFilePath);
+        BufferedReader bufferedReader = new BufferedReader(fileReader);
+        while ((line = bufferedReader.readLine()) != null) {
+            String[] details = line.split("\\|");
+            addTransferToList(new Transfer(details[0], details[1], details[2]));
+        }
+    }
+
+    public void addToLogFile(String name, String remoteAddress) throws IOException {
+        fileWriter = new FileWriter(ControlPanel.logFilePath, true);
+        fileWriter.append(name).append("?").append(new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date())).append("?").append(remoteAddress);
+        fileWriter.append(System.getProperty("line.separator"));
+        fileWriter.close();
     }
 }

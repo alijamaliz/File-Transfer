@@ -32,45 +32,10 @@ public class Listener extends Thread {
         this.serverGUI = serverGUI;
     }
 
-    private FileWriter fileWriter;
-    private FileReader fileReader;
-    BufferedWriter out;
-    DateFormat dateFormat;
-    Date date;
-    Files files;
-
-
-    private void writeText(String name, String remoteAddress) throws IOException {
-        date = new Date();
-        dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-        fileWriter = new FileWriter("G:\\university\\term2\\AP\\project2\\File-Transfer\\src\\controller\\downloadhistory.txt", true);
-        fileWriter.append(name).append("|").append(dateFormat.format(date)).append("|").append(remoteAddress);
-        fileWriter.append(System.getProperty("line.separator"));
-        fileWriter.close();
-        //Files.write(Paths.get("G:\\university\\term2\\AP\\project2\\File-Transfer\\src\\controller\\downloadhistory.txt"), ().getBytes(), StandardOpenOption.APPEND);
-
-    }
-
-    private void addLogsToHistory()throws IOException
-    {
-        String line="";
-
-        fileReader = new FileReader("G:\\university\\term2\\AP\\project2\\File-Transfer\\src\\controller\\downloadhistory.txt");
-        BufferedReader bufferedReader = new BufferedReader(fileReader);
-        while ((line = bufferedReader.readLine()) != null) {
-            System.out.println(line);
-            String[] logFile = line.split("|",10);
-            System.out.println(logFile[2]);
-
-            serverGUI.addTransferToList(new Transfer(logFile[0], logFile[1], logFile[2]));
-        }
-
-    }
 
     @Override
     public void run() {
         try {
-            addLogsToHistory();
             if (serverSocket == null)
                 serverSocket = new ServerSocket(ControlPanel.port);
             Socket socket = serverSocket.accept();
@@ -86,9 +51,6 @@ public class Listener extends Thread {
             }
             String remoteAddress = socket.getRemoteSocketAddress().toString();
             String name = new String(nameBytes, "UTF-8");
-            writeText(name, remoteAddress);
-            Transfer transfer = new Transfer(name,dateFormat.format(date),remoteAddress);
-            serverGUI.addTransferToList(transfer);
             String filename = ControlPanel.downloadDirectory + name;
             FileOutputStream fileOutputStream = new FileOutputStream(filename);
             fileSize = (int) inputStream.read();
@@ -109,6 +71,10 @@ public class Listener extends Thread {
                 serverGUI.logInConsole("File downloaded in " + filename);
                 socket.close();
             }
+
+            serverGUI.addToLogFile(name, remoteAddress);
+            Transfer transfer = new Transfer(name, new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date()),remoteAddress);
+            serverGUI.addTransferToList(transfer);
         } catch (IOException e) {
             e.printStackTrace();
         }
