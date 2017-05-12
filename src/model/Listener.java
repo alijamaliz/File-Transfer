@@ -25,17 +25,21 @@ public class Listener extends Thread {
     private static int numberOfListener = 0;
     private static ServerSocket serverSocket;
     private InputStream inputStream;
-    private ServerGUI serverGUI;
-    private int fileSize = 0, receivedBytes = 0;
+    public ServerGUI serverGUI;
+    private ServerGUIThread serverGUIThread;
+    private int fileSize, receivedBytes;
 
     public Listener(ServerGUI serverGUI) {
         this.serverGUI = serverGUI;
+        this.serverGUIThread = new ServerGUIThread(this);
     }
 
 
     @Override
     public void run() {
         try {
+            fileSize = 0;
+            receivedBytes = 0;
             if (serverSocket == null)
                 serverSocket = new ServerSocket(ControlPanel.port);
             Socket socket = serverSocket.accept();
@@ -49,12 +53,19 @@ public class Listener extends Thread {
             for (int i = 0; i < nameBytes.length; i++) {
                 nameBytes[i] = (byte) inputStream.read();
             }
-            String remoteAddress = socket.getRemoteSocketAddress().toString();
             String name = new String(nameBytes, "UTF-8");
             String filename = ControlPanel.downloadDirectory + name;
-            FileOutputStream fileOutputStream = new FileOutputStream(filename);
-            fileSize = (int) inputStream.read();
 
+            byte[] sizeBytes = new byte[inputStream.read()];
+            for (int i = 0; i < sizeBytes.length; i++) {
+                sizeBytes[i] = (byte) inputStream.read();
+            }
+            fileSize = Integer.valueOf(new String(sizeBytes, "UTF-8"));
+
+            String remoteAddress = socket.getRemoteSocketAddress().toString();
+            FileOutputStream fileOutputStream = new FileOutputStream(filename);
+
+            serverGUIThread.start();
 
             while (!socket.isClosed()) {
 
@@ -65,7 +76,6 @@ public class Listener extends Thread {
                     fileOutputStream.write((byte) byteCode);
                     fileOutputStream.flush();
                     receivedBytes++;
-                    serverGUI.setProgressBarValue(serverGUI.getProgressBarValue());
                 }
                 fileOutputStream.close();
                 serverGUI.logInConsole("File downloaded in " + filename);
@@ -75,14 +85,18 @@ public class Listener extends Thread {
             serverGUI.addToLogFile(name, remoteAddress);
             Transfer transfer = new Transfer(name, new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date()),remoteAddress);
             serverGUI.addTransferToList(transfer);
+            serverGUI.listeners.remove(this);
+            serverGUI.setProgressBarValue(0.0);
+            serverGUI.setPercentLabelText(0);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public int getPercent() {
+    public double getPercent() {
         if (fileSize == 0)
             return 0;
-        return receivedBytes / fileSize * 100;
+        return (double) receivedBytes / (double) fileSize;
     }
 }

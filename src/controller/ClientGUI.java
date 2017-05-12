@@ -1,6 +1,7 @@
 package controller;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -54,16 +55,13 @@ public class ClientGUI implements Initializable {
     private TextField percentTextField;
 
     @FXML
-    private Label sizeLabel;
+    private TextField sizeTextField;
 
     @FXML
-    private Label speedLabel;
+    private TextField speedTextField;
 
     @FXML
     private ProgressBar progressBar;
-
-    @FXML
-    private MenuItem menuItemSettings;
 
     @FXML
     private MenuItem menuItemClose;
@@ -85,12 +83,12 @@ public class ClientGUI implements Initializable {
             public void handle(ActionEvent event) {
                 try {
                     if (selectedFile != null) {
-                        //if (isValidIP()) {
+                        if (isValidIP()) {
                             Sender sender = new Sender(ClientGUI.this, selectedFile);
                             sender.start();
-                        //}
-                        //else
-                        //    logInConsole("Enter a valid IP.");
+                        }
+                        else
+                            logInConsole("Enter a valid IP.");
                     }
                     else
                         logInConsole("Select a file and try again.");
@@ -123,42 +121,45 @@ public class ClientGUI implements Initializable {
 
     public void setProgressBarValue(double value) {
         progressBar.setProgress(value);
-        setPercentLabelText((int)(value * 100));
     }
 
     public void setPercentLabelText(int percent) {
-//        System.out.println(percent + "%");
-       // System.out.println(percentTextField.getText());
         percentTextField.setText(percent + "%");
     }
 
-    public void setSpeedLabelText(int speed) {
-        speedLabel.setText(speed + "B/s");
+    public void setSpeedText(int speed) {
+        speedTextField.setText(speed + "B/s");
     }
 
     private boolean isValidIP() {
-        if (ipPart1.getText() != null || ipPart2.getText() != null || ipPart3.getText() != null || ipPart4.getText() != null) {
+        try {
+            if (ipPart1.getText() == "" || ipPart2.getText() == "" || ipPart3.getText() == "" || ipPart4.getText() == "") {
+                return false;
+            }
+            if (Integer.valueOf(ipPart1.getText()) > 255) {
+                return false;
+            }
+            if (Integer.valueOf(ipPart2.getText()) > 255) {
+                return false;
+            }
+            if (Integer.valueOf(ipPart3.getText()) > 255) {
+                return false;
+            }
+            if (Integer.valueOf(ipPart4.getText()) > 255) {
+                return false;
+            }
+            ControlPanel.serverAddress = ipPart1.getText() + "." + ipPart2.getText() + "." + ipPart3.getText() + "." + ipPart4.getText();
+            return true;
+        } catch (Exception e) {
             return false;
         }
-        if (Integer.valueOf(ipPart1.getText()) > 255) {
-            return false;
-        }
-        if (Integer.valueOf(ipPart2.getText()) > 255) {
-            return false;
-        }
-        if (Integer.valueOf(ipPart3.getText()) > 255) {
-            return false;
-        }
-        if (Integer.valueOf(ipPart4.getText()) > 255) {
-            return false;
-        }
-        ControlPanel.serverAddress = ipPart1.getText() + "." + ipPart2.getText() + "." + ipPart3.getText() + "." + ipPart4.getText();
-        return true;
+    }
+
+    private String getIP() {
+        return ipPart1 + "." + ipPart2 + "." + ipPart3 + "." +ipPart4;
     }
 
     public void setSizeLabelText(int sent, int total) {
-        System.out.println(sent + "/" + total + " Bytes");
-        sizeLabel.setText("Dalghak");
-        //sizeLabel.setText(sent + "/" + total + " Bytes");
+        sizeTextField.setText(sent / 1000 + "/" + total / 1000 + " KB");
     }
 }

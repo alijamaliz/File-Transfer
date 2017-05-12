@@ -9,10 +9,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.DirectoryChooser;
-import model.ControlPanel;
-import model.Listener;
-import model.Server;
-import model.Transfer;
+import model.*;
 
 import java.io.*;
 import java.net.URL;
@@ -59,7 +56,7 @@ public class ServerGUI implements Initializable {
     private Button changeDirectory;
 
     @FXML
-    private Label percentLabel;
+    private TextField percentTextField;
 
     @FXML
     private Label numberOfClientsLabel;
@@ -156,11 +153,10 @@ public class ServerGUI implements Initializable {
 
     public void setProgressBarValue(double value) {
         progressbar.setProgress(value);
-        //setPercentLabelText((int)(value  * 100));
     }
 
-    private void setPercentLabelText(int percent) {
-        percentLabel.setText(String.valueOf(percent) + "%");
+    public void setPercentLabelText(int percent) {
+        percentTextField.setText(String.valueOf(percent) + "%");
     }
 
     private void dissconnectAllClients() {
@@ -198,12 +194,14 @@ public class ServerGUI implements Initializable {
         logInConsole("New listener was setup!");
     }
 
-    public int getProgressBarValue() {
-        int bank = 0;
+    public double getProgressBarValue() {
+        double bank = 0;
         for (Listener listener : listeners) {
+            System.out.println("Percent: " + listener.getPercent());
             bank += listener.getPercent();
         }
-        return bank/listeners.size();
+        System.out.println();
+        return bank/(listeners.size() - 1);
     }
 
     public void addTransferToList(Transfer transfer)
@@ -231,7 +229,7 @@ public class ServerGUI implements Initializable {
 
     public void addToLogFile(String name, String remoteAddress) throws IOException {
         fileWriter = new FileWriter(ControlPanel.logFilePath, true);
-        fileWriter.append(name).append("?").append(new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date())).append("?").append(remoteAddress);
+        fileWriter.append(name).append("|").append(new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date())).append("|").append(remoteAddress);
         fileWriter.append(System.getProperty("line.separator"));
         fileWriter.close();
     }
