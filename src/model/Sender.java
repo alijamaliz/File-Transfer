@@ -56,12 +56,12 @@ public class Sender extends Thread {
         clientGuiThread.start();
 
         int byteCode;
-        while( -1 != (byteCode = fileOutputStream.read())) {
-            outputStream.writeByte((byte) byteCode);
-            sentBytes++;
-            outputStream.flush();
-
+        byte[] bytes = new byte[ControlPanel.packetSize];
+        while( -1 != (byteCode = fileOutputStream.read(bytes))) {
+            outputStream.write(bytes, 0, byteCode);
+            sentBytes += byteCode;
         }
+        outputStream.flush();
         outputStream.writeByte((byte)(-1));
         clientSocket.getOutputStream().flush();
         clientGUI.logInConsole("File sent: " + file.getPath());

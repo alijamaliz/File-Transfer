@@ -61,6 +61,9 @@ public class ClientGUI implements Initializable {
     @FXML
     private MenuItem menuItemClose;
 
+    @FXML
+    private TextField portTextField;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         browser.setOnAction(new EventHandler<ActionEvent>() {
@@ -78,7 +81,8 @@ public class ClientGUI implements Initializable {
             public void handle(ActionEvent event) {
                 try {
                     if (selectedFile != null) {
-                        if (isValidIP()) {
+                        if (isValidIP() && isValidPort()) {
+                            ControlPanel.port = getPort();
                             Sender sender = new Sender(ClientGUI.this, selectedFile);
                             sender.setPriority(Thread.MAX_PRIORITY);
                             sender.start();
@@ -146,5 +150,15 @@ public class ClientGUI implements Initializable {
 
     public void setSizeTextFieldText(int sent, int total) {
         sizeTextField.setText(sent / 1000 + "/" + total / 1000 + " KB");
+    }
+
+    private boolean isValidPort() {
+        if (portTextField.getText() != "")
+            return true;
+        return false;
+    }
+
+    private int getPort() {
+        return Integer.valueOf(portTextField.getText());
     }
 }

@@ -58,13 +58,26 @@ public class Listener extends Thread {
 
             serverGUIThread.start();
 
-            while (!socket.isClosed()) {
+            /*while (!socket.isClosed()) {
                 int byteCode;
                 while (-1 != (byteCode = inputStream.read())) {
                     fileOutputStream.write((byte) byteCode);
                     fileOutputStream.flush();
                     receivedBytes++;
                 }
+                fileOutputStream.close();
+                serverGUI.logInConsole("File downloaded in " + filename);
+                socket.close();
+            }*/
+
+            while (!socket.isClosed()) {
+                int byteCode;
+                byte[] bytes = new byte[ControlPanel.packetSize];
+                while (-1 != (byteCode = inputStream.read(bytes))) {
+                    fileOutputStream.write(bytes, 0, byteCode);
+                    receivedBytes += byteCode;
+                }
+                fileOutputStream.flush();
                 fileOutputStream.close();
                 serverGUI.logInConsole("File downloaded in " + filename);
                 socket.close();
@@ -95,5 +108,10 @@ public class Listener extends Thread {
             }
         }
         Thread.currentThread().interrupt();
+    }
+
+    private boolean checkIsFileExists(String path) {
+        File f = new File(path);
+        return (f.exists() && !f.isDirectory());
     }
 }

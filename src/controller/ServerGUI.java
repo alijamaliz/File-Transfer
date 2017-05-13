@@ -85,9 +85,9 @@ public class ServerGUI implements Initializable {
         setProgressBarValue(0.0);
 
         trasferList = new ArrayList<Transfer>();
-        nameColumn.setCellValueFactory(new PropertyValueFactory<Transfer,String>("name"));
-        dateColumn.setCellValueFactory(new PropertyValueFactory<Transfer,String>("date"));
-        addressColumn.setCellValueFactory(new PropertyValueFactory<Transfer,String>("address"));
+        nameColumn.setCellValueFactory(new PropertyValueFactory<Transfer, String>("name"));
+        dateColumn.setCellValueFactory(new PropertyValueFactory<Transfer, String>("date"));
+        addressColumn.setCellValueFactory(new PropertyValueFactory<Transfer, String>("address"));
 
         try {
             addLogsToHistory();
@@ -159,11 +159,11 @@ public class ServerGUI implements Initializable {
         }
     }
 
-    public void setNumberOfClientsText (int number) {
+    public void setNumberOfClientsText(int number) {
         numberOfClientsTextField.setText("Number of clients: " + number);
     }
 
-    private void showDownloadDirectoryInExplorer() throws Exception{
+    private void showDownloadDirectoryInExplorer() throws Exception {
         Runtime.getRuntime().exec("explorer.exe " + ControlPanel.downloadDirectory);
     }
 
@@ -172,7 +172,7 @@ public class ServerGUI implements Initializable {
         directoryChooser.setTitle("Select download directory...");
         directoryChooser.setInitialDirectory(new File(ControlPanel.downloadDirectory));
         File tempDirectory = directoryChooser.showDialog(Server.stage);
-        if(tempDirectory != null) {
+        if (tempDirectory != null) {
             ControlPanel.downloadDirectory = tempDirectory.getAbsolutePath();
             directoryTextField.setText(ControlPanel.downloadDirectory);
         }
@@ -196,23 +196,20 @@ public class ServerGUI implements Initializable {
         for (Listener listener : listeners) {
             bank += listener.getPercent();
         }
-        return bank/(listeners.size() - 1);
+        return bank / (listeners.size() - 1);
     }
 
-    public void addTransferToList(Transfer transfer)
-    {
+    public void addTransferToList(Transfer transfer) {
         trasferList.add(transfer);
         updateHistoryTable();
     }
 
-    public void updateHistoryTable()
-    {
+    public void updateHistoryTable() {
         historyTable.setItems(FXCollections.observableList(trasferList));
     }
 
-    private void addLogsToHistory()throws IOException
-    {
-        String line="";
+    private void addLogsToHistory() throws IOException {
+        String line = "";
         fileReader = new FileReader(ControlPanel.logFilePath);
         BufferedReader bufferedReader = new BufferedReader(fileReader);
         while ((line = bufferedReader.readLine()) != null) {

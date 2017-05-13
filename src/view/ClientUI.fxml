@@ -23,7 +23,7 @@
       </MenuBar>
       <TextField fx:id="path" editable="false" layoutX="10.0" layoutY="30.0" prefHeight="25.0" prefWidth="220.0" text="Nothing selected..." />
       <Button fx:id="browser" layoutX="230.0" layoutY="30.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="60.0" text="Browse" />
-      <Button fx:id="send" layoutX="10.0" layoutY="100.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="280.0" text="Send" />
+      <Button fx:id="send" layoutX="100.0" layoutY="100.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="190.0" text="Send" />
       <TextArea fx:id="consoleTextArea" editable="false" layoutX="10.0" layoutY="180.0" prefHeight="200.0" prefWidth="280.0" />
       <ProgressBar fx:id="progressBar" layoutX="10.0" layoutY="135.0" prefWidth="280.0" progress="0.0" />
       <Label layoutX="10.0" layoutY="68.0" text="Target IP:" />
@@ -37,5 +37,7 @@
       <TextField fx:id="percentTextField" alignment="CENTER" disable="true" editable="false" layoutX="126.0" layoutY="150.0" prefWidth="50.0" style="-fx-background-color: rgba(0,0,0,0);" text="0%" />
       <TextField fx:id="speedTextField" alignment="CENTER_RIGHT" disable="true" editable="false" layoutX="180.0" layoutY="150.0" prefHeight="25.0" prefWidth="110.0" style="-fx-background-color: rgba(0,0,0,0);" text="0.0 B/s" />
       <TextField fx:id="sizeTextField" disable="true" editable="false" layoutX="2.0" layoutY="150.0" prefHeight="25.0" prefWidth="110.0" style="-fx-background-color: rgba(0,0,0,0);" text="0/0 Bytes" />
+      <TextField fx:id="portTextField" layoutX="42.0" layoutY="100.0" prefHeight="25.0" prefWidth="50.0" text="17289" />
+      <Label layoutX="11.0" layoutY="104.0" text="Port:" />
    </children>
 </AnchorPane>

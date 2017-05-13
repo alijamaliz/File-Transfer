@@ -9,4 +9,5 @@ public class ControlPanel {
 	public static String serverAddress = "localhost";
     public static String downloadDirectory = "D:\\FTDownloads\\";
     public static String logFilePath = "D:\\FTDownloads\\log.log";
+    public static int packetSize = 1024;
 }
