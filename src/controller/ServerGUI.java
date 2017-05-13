@@ -28,8 +28,7 @@ public class ServerGUI implements Initializable {
     public ArrayList<Listener> listeners = new ArrayList<Listener>();
     private FileWriter fileWriter;
     private FileReader fileReader;
-    DateFormat dateFormat;
-    Date date;
+    private List<Transfer> trasferList;
 
     @FXML
     private Button listen;
@@ -59,7 +58,7 @@ public class ServerGUI implements Initializable {
     private TextField percentTextField;
 
     @FXML
-    private Label numberOfClientsLabel;
+    private TextField numberOfClientsTextField;
 
     @FXML
     private Button showExplorer;
@@ -76,12 +75,8 @@ public class ServerGUI implements Initializable {
     @FXML
     private TableColumn addressColumn;
 
-
     @FXML
     private Button exit;
-
-    List<Transfer> trasferList;
-
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -94,13 +89,11 @@ public class ServerGUI implements Initializable {
         dateColumn.setCellValueFactory(new PropertyValueFactory<Transfer,String>("date"));
         addressColumn.setCellValueFactory(new PropertyValueFactory<Transfer,String>("address"));
 
-
         try {
             addLogsToHistory();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
 
         listen.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -155,16 +148,19 @@ public class ServerGUI implements Initializable {
         progressbar.setProgress(value);
     }
 
-    public void setPercentLabelText(int percent) {
+    public void setPercentTextFieldText(int percent) {
         percentTextField.setText(String.valueOf(percent) + "%");
     }
 
     private void dissconnectAllClients() {
-        //TODO
+        for (Listener listener : listeners) {
+            listener.cancel();
+            listeners.remove(listener);
+        }
     }
 
     public void setNumberOfClientsText (int number) {
-        numberOfClientsLabel.setText("Number of clients: " + number);
+        numberOfClientsTextField.setText("Number of clients: " + number);
     }
 
     private void showDownloadDirectoryInExplorer() throws Exception{
@@ -189,6 +185,7 @@ public class ServerGUI implements Initializable {
 
     public void setupNewListener() {
         Listener listener = new Listener(ServerGUI.this);
+        listener.setPriority(Thread.MAX_PRIORITY);
         listener.start();
         listeners.add(listener);
         logInConsole("New listener was setup!");
@@ -197,10 +194,8 @@ public class ServerGUI implements Initializable {
     public double getProgressBarValue() {
         double bank = 0;
         for (Listener listener : listeners) {
-            System.out.println("Percent: " + listener.getPercent());
             bank += listener.getPercent();
         }
-        System.out.println();
         return bank/(listeners.size() - 1);
     }
 
@@ -212,8 +207,7 @@ public class ServerGUI implements Initializable {
 
     public void updateHistoryTable()
     {
-        ObservableList<Transfer> observableList = FXCollections.observableList(trasferList);
-        historyTable.setItems(observableList);
+        historyTable.setItems(FXCollections.observableList(trasferList));
     }
 
     private void addLogsToHistory()throws IOException

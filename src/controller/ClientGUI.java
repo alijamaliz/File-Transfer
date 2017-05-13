@@ -1,7 +1,5 @@
 package controller;
 
-import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -12,10 +10,8 @@ import javafx.stage.FileChooser;
 import model.Client;
 import model.ControlPanel;
 import model.Sender;
-import model.Server;
 
 import java.io.*;
-import java.net.Socket;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -23,7 +19,6 @@ import java.util.ResourceBundle;
  * Created by Baran on 5/1/2017.
  */
 public class ClientGUI implements Initializable {
-
 
     private File selectedFile;
 
@@ -85,12 +80,11 @@ public class ClientGUI implements Initializable {
                     if (selectedFile != null) {
                         if (isValidIP()) {
                             Sender sender = new Sender(ClientGUI.this, selectedFile);
+                            sender.setPriority(Thread.MAX_PRIORITY);
                             sender.start();
-                        }
-                        else
+                        } else
                             logInConsole("Enter a valid IP.");
-                    }
-                    else
+                    } else
                         logInConsole("Select a file and try again.");
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -115,6 +109,25 @@ public class ClientGUI implements Initializable {
         return fileChooser.showOpenDialog(Client.stage);
     }
 
+    private boolean isValidIP() {
+        try {
+            if (ipPart1.getText() == "" || ipPart2.getText() == "" || ipPart3.getText() == "" || ipPart4.getText() == "")
+                return false;
+            if (Integer.valueOf(ipPart1.getText()) > 255)
+                return false;
+            if (Integer.valueOf(ipPart2.getText()) > 255)
+                return false;
+            if (Integer.valueOf(ipPart3.getText()) > 255)
+                return false;
+            if (Integer.valueOf(ipPart4.getText()) > 255)
+                return false;
+            ControlPanel.serverAddress = ipPart1.getText() + "." + ipPart2.getText() + "." + ipPart3.getText() + "." + ipPart4.getText();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     public void logInConsole(String log) {
         consoleTextArea.setText(consoleTextArea.getText() + log + "\n");
     }
@@ -123,43 +136,15 @@ public class ClientGUI implements Initializable {
         progressBar.setProgress(value);
     }
 
-    public void setPercentLabelText(int percent) {
+    public void setPercentTextFieldText(int percent) {
         percentTextField.setText(percent + "%");
     }
 
-    public void setSpeedText(int speed) {
-        speedTextField.setText(speed + "B/s");
+    public void setSpeedTextFieldText(int speed) {
+        speedTextField.setText(speed / 1000  + "KB/s");
     }
 
-    private boolean isValidIP() {
-        try {
-            if (ipPart1.getText() == "" || ipPart2.getText() == "" || ipPart3.getText() == "" || ipPart4.getText() == "") {
-                return false;
-            }
-            if (Integer.valueOf(ipPart1.getText()) > 255) {
-                return false;
-            }
-            if (Integer.valueOf(ipPart2.getText()) > 255) {
-                return false;
-            }
-            if (Integer.valueOf(ipPart3.getText()) > 255) {
-                return false;
-            }
-            if (Integer.valueOf(ipPart4.getText()) > 255) {
-                return false;
-            }
-            ControlPanel.serverAddress = ipPart1.getText() + "." + ipPart2.getText() + "." + ipPart3.getText() + "." + ipPart4.getText();
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    private String getIP() {
-        return ipPart1 + "." + ipPart2 + "." + ipPart3 + "." +ipPart4;
-    }
-
-    public void setSizeLabelText(int sent, int total) {
+    public void setSizeTextFieldText(int sent, int total) {
         sizeTextField.setText(sent / 1000 + "/" + total / 1000 + " KB");
     }
 }

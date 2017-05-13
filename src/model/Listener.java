@@ -1,29 +1,20 @@
 package model;
 
 import controller.ServerGUI;
-import sun.misc.IOUtils;
-import sun.nio.ch.IOUtil;
-
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
-import java.sql.Time;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Scanner;
 
 /**
  * Created by Baran on 5/6/2017.
  */
 public class Listener extends Thread {
 
-    private static int numberOfListener = 0;
     private static ServerSocket serverSocket;
+    private Socket socket;
     private InputStream inputStream;
     public ServerGUI serverGUI;
     private ServerGUIThread serverGUIThread;
@@ -32,6 +23,7 @@ public class Listener extends Thread {
     public Listener(ServerGUI serverGUI) {
         this.serverGUI = serverGUI;
         this.serverGUIThread = new ServerGUIThread(this);
+        this.serverGUIThread.setPriority(Thread.NORM_PRIORITY);
     }
 
 
@@ -42,9 +34,8 @@ public class Listener extends Thread {
             receivedBytes = 0;
             if (serverSocket == null)
                 serverSocket = new ServerSocket(ControlPanel.port);
-            Socket socket = serverSocket.accept();
+            socket = serverSocket.accept();
             inputStream = socket.getInputStream();
-
 
             serverGUI.logInConsole(socket.getRemoteSocketAddress().toString() + " connected.");
             serverGUI.setupNewListener();
@@ -68,10 +59,7 @@ public class Listener extends Thread {
             serverGUIThread.start();
 
             while (!socket.isClosed()) {
-
-                String res = "";
                 int byteCode;
-                int count = 0;
                 while (-1 != (byteCode = inputStream.read())) {
                     fileOutputStream.write((byte) byteCode);
                     fileOutputStream.flush();
@@ -86,8 +74,6 @@ public class Listener extends Thread {
             Transfer transfer = new Transfer(name, new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date()),remoteAddress);
             serverGUI.addTransferToList(transfer);
             serverGUI.listeners.remove(this);
-            serverGUI.setProgressBarValue(0.0);
-            serverGUI.setPercentLabelText(0);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -98,5 +84,16 @@ public class Listener extends Thread {
         if (fileSize == 0)
             return 0;
         return (double) receivedBytes / (double) fileSize;
+    }
+
+    public void cancel() {
+        if (socket != null) {
+            try {
+                socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        Thread.currentThread().interrupt();
     }
 }

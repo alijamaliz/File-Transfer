@@ -12,17 +12,19 @@ import java.net.Socket;
  */
 public class Sender extends Thread {
 
-    public int sentBytes = 0;
-    public long fileSize = 0;
+    public int sentBytes;
+    public long fileSize;
     private File file;
     private ClientGUIThread clientGuiThread;
-
     public ClientGUI clientGUI;
 
     public Sender(ClientGUI clientGUI, File file) {
         this.clientGUI = clientGUI;
         this.file = file;
+        sentBytes = 0;
+        fileSize = 0;
         clientGuiThread = new ClientGUIThread(this);
+        this.clientGuiThread.setPriority(Thread.NORM_PRIORITY);
     }
 
     @Override
@@ -30,8 +32,7 @@ public class Sender extends Thread {
         try {
             sendFile(file);
         } catch (Exception e) {
-            clientGUI.logInConsole("An error!!");
-            e.printStackTrace();
+            clientGUI.logInConsole("Cannot connect to the server!");
         }
     }
 
@@ -43,23 +44,24 @@ public class Sender extends Thread {
         DataOutputStream outputStream = new DataOutputStream(clientSocket.getOutputStream());
         clientGUI.logInConsole("Successfuly connected to " + ControlPanel.serverAddress + ":" + ControlPanel.port);
         clientGUI.logInConsole("Start sending: " + file.getPath());
-        int byteCode;
-        //outputStream.write(Byte.parseByte(file.getName()));
+
         outputStream.write(file.getName().getBytes().length); //Send length of filename
         outputStream.writeBytes(file.getName()); //Send bytes of filename
         outputStream.flush();
-        //outputStream.write((int)fileSize);
+
         outputStream.write(String.valueOf(fileSize).getBytes().length); //Send length of filesize
         outputStream.writeBytes(String.valueOf(fileSize)); //Send bytes of filesize
         outputStream.flush();
+
         clientGuiThread.start();
 
+        int byteCode;
         while( -1 != (byteCode = fileOutputStream.read())) {
             outputStream.writeByte((byte) byteCode);
             sentBytes++;
+            outputStream.flush();
 
         }
-        outputStream.flush();
         outputStream.writeByte((byte)(-1));
         clientSocket.getOutputStream().flush();
         clientGUI.logInConsole("File sent: " + file.getPath());
@@ -67,6 +69,14 @@ public class Sender extends Thread {
         fileOutputStream.close();
         outputStream.close();
         clientSocket.close();
+
+        clientGuiThread.interrupt();
+        clientGUI.setProgressBarValue(0.0);
+        clientGUI.setPercentTextFieldText(0);
+        clientGUI.setSizeTextFieldText(0, 0);
+        clientGUI.setSpeedTextFieldText(0);
+        Sender.currentThread().interrupt();
+
         return true;
     }
 
